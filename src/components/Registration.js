@@ -1,20 +1,6 @@
 import React, { useState } from "react";
-import {
-  Card,
-  Input,
-  Checkbox,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
-import { Form, Dropdown, Dimmer, Loader } from "semantic-ui-react";
 
-import ApiService from "../service/ApiService";
-import { HttpStatusCode } from "axios";
-import { Link, useNavigate } from "react-router-dom";
-
-const Registration = () => {
-  const navigate = useNavigate();
-
+export default function Registration() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -22,236 +8,151 @@ const Registration = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [terms, setTerms] = useState(false);
-  const [dob, setDob] = useState(null);
-  const [gender, setGender] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [serverError, setServerError] = useState("");
 
-  const formData = {
-    firstname,
-    lastname,
-    phoneNumber,
-    email,
-    password,
-    confirmPassword,
-    terms,
-    dob,
-    gender,
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  const validateFields = () => {
+    // Validate form fields
     if (
       firstname.trim() === "" ||
       lastname.trim() === "" ||
       phoneNumber.trim() === "" ||
       email.trim() === "" ||
       password.trim() === "" ||
-      confirmPassword.trim() === "" ||
-      dob === null ||
-      gender === ""
+      confirmPassword.trim() === ""
     ) {
-      setError("Some fields are missing input.");
-      return false;
-    }
-    return true;
-  };
-
-  const validateEmail = () => {
-    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-    if (!emailRegex.test(email)) {
-      setError("Invalid email address.");
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateFields()) {
+      setError("Please fill in all fields.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords don't match!");
-      return;
-    }
-
-    if (!validateEmail()) {
+      setError("Passwords do not match.");
       return;
     }
 
     if (!terms) {
-      setError("Please accept the Terms and Conditions.");
+      setError("Please agree to the Terms and Conditions.");
       return;
     }
 
-    try {
-      setTimeout(() => {
-        setIsLoading(true);
-      }, 10000);
-      const response = await ApiService.patientRegPost(formData);
-      if (response.status === HttpStatusCode.Ok) {
-        navigate("/login");
-        const data = response.data;
-        console.log(data);
-      } else {
-        setServerError("Server Error. Please try again later.");
-      }
-    } catch (error) {
-      console.log(`Error occurred while posting data to the server: ${error}`);
-      setServerError("Server Error. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
+    // Form submission logic
+    // ...
+
+    // Reset form fields and error
+    setFirstname("");
+    setLastname("");
+    setPhoneNumber("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setTerms(false);
+    setError("");
   };
 
-  // Gender options
-  const genderOptions = [
-    { key: "MALE", value: "MALE", text: "MALE" },
-    { key: "FEMALE", value: "FEMALE", text: "FEMALE" },
-  ];
-
   return (
-    <div>
-      <div
-        style={{
-          width: "50%",
-          margin: "auto",
-          marginTop: 100,
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          padding: "20px",
-          textAlign: "center",
-        }}
-      >
-        <Card className="border shadow-2xl" color="transparent" shadow={false}>
-          <Typography variant="h4" color="blue-gray">
-            Sign Up
-          </Typography>
-          <Typography color="gray" className="mt-1 font-normal">
-            Enter your details to register.
-          </Typography>
-          <form className="mt-8 w-1/2 mb-2 mx-auto max-w-md">
-            <div className="mb-4 flex flex-col gap-6">
-              <Input
-                value={firstname}
-                onChange={(e) => setFirstname(e.target.value)}
-                type="text"
-                size="lg"
-                label="Firstname"
-                className="w-full"
-              />
-              <Input
-                value={lastname}
-                onChange={(e) => setLastname(e.target.value)}
-                type="text"
-                size="lg"
-                label="Lastname"
-                className="w-full"
-              />
-              <Input
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                type="tel"
-                size="lg"
-                label="Phone number"
-                className="w-full"
-              />
-              <Input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                size="lg"
-                label="Email"
-                className="w-full"
-              />
-              <Input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                size="lg"
-                label="Password"
-                className="w-full"
-              />
-              <Input
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                type="password"
-                size="lg"
-                label="Confirm Password"
-                className="w-full"
-              />
-              <Form.Field>
-                <Dropdown
-                  placeholder="Select Gender"
-                  fluid
-                  selection
-                  options={genderOptions}
-                  value={gender}
-                  onChange={(e, { value }) => setGender(value)}
-                  required
-                />
-              </Form.Field>
-            </div>
-            <Checkbox
-              checked={terms}
-              onChange={(e) => setTerms(e.target.checked)}
-              label={
-                <Typography
-                  variant="small"
-                  color={error ? "red" : "gray"}
-                  className="flex items-center font-normal"
-                >
-                  I agree to the{" "}
-                  <a
-                    href="/terms-and-conditions"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium transition-colors hover:text-blue-500"
-                  >
-                    Terms and Conditions
-                  </a>
-                </Typography>
-              }
-              containerProps={{ className: "-ml-2.5" }}
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+        <h2 className="text-center text-2xl font-bold mb-8">Sign Up</h2>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="firstname" className="block text-sm font-medium">
+              First Name
+            </label>
+            <input
+              id="firstname"
+              type="text"
+              className="mt-1 h-8 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={firstname}
+              onChange={(e) => setFirstname(e.target.value)}
             />
-            {error && (
-              <Typography color="red" className="mt-2 text-center font-normal">
-                {error}
-              </Typography>
-            )}
-            {serverError && (
-              <Typography color="red" className="mt-2 text-center font-normal">
-                {serverError}
-              </Typography>
-            )}
-            <Button
-              onClick={handleSubmit}
-              className="mt-6"
-              fullWidth
-              disabled={isLoading}
+          </div>
+          <div>
+            <label htmlFor="lastname" className="block text-sm font-medium">
+              Last Name
+            </label>
+            <input
+              id="lastname"
+              type="text"
+              className="mt-1 h-8  block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="phoneNumber" className="block text-sm font-medium">
+              Phone Number
+            </label>
+            <input
+              id="phoneNumber"
+              type="text"
+              className="mt-1 block w-full h-8  rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium">
+              Email
+            </label>
+            <input
+              id="email"
+              type="text"
+              className="mt-1 block w-full h-8  rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              className="mt-1 block w-full h-8  rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm h-8  font-medium"
+            >
+              Confirm Password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              className="mt-1 block w-full h-8  rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="terms" className="flex items-center">
+              <input
+                id="terms"
+                type="checkbox"
+                className="form-checkbox"
+                checked={terms}
+                onChange={(e) => setTerms(e.target.checked)}
+              />
+              <span className="ml-2">I agree to the Terms and Conditions</span>
+            </label>
+          </div>
+          {error && <p className="text-red-500">{error}</p>}
+          <div>
+            <button
+              type="submit"
+              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
             >
               Register
-            </Button>
-            {isLoading && (
-              <Dimmer active inverted>
-                <Loader />
-              </Dimmer>
-            )}
-            <Typography color="gray" className="mt-4 text-center font-normal">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-medium text-blue-500 transition-colors hover:text-blue-700"
-              >
-                Sign In
-              </Link>
-            </Typography>
-          </form>
-        </Card>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
-};
-
-export default Registration;
+}
