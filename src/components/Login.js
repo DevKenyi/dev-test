@@ -1,6 +1,4 @@
 import React, { useContext, useState } from "react";
-import { Form, Button, Dimmer, Loader, Message } from "semantic-ui-react";
-import { HttpStatusCode } from "axios";
 import { useNavigate } from "react-router-dom";
 import ApiService from "./service/ApiService";
 import { AuthContext } from "./AuthProvider";
@@ -52,10 +50,6 @@ const Login = ({ serverResponse }) => {
         navigate("/dashboard");
 
         login(response.data);
-        // localStorage.setItem("sessionToken", sessionToken);
-        //specify the function of clearing session
-
-        // Cookies.set("JSESSIONID", response.data.JSESSIONID);
       } else {
         setIsError(true);
       }
@@ -70,14 +64,15 @@ const Login = ({ serverResponse }) => {
   const handleSessionTimout = () => {
     let timoutId;
   };
+
   const resetTimout = () => {
     logout();
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex  justify-center items-center h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-center text-2xl font-bold mb-8">Sign Up</h2>
+        <h2 className="text-center text-2xl font-bold mb-8">Sign In</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <input
@@ -100,13 +95,13 @@ const Login = ({ serverResponse }) => {
             />
           </div>
 
-          <div>{isError && <p className="text-red-500">{isError}</p>}</div>
+          {formError && <p className="text-red-500">{formError}</p>}
           <div>
             <button
               type="submit"
               className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
             >
-              Sign in
+              Sign In
             </button>
           </div>
         </form>
@@ -117,6 +112,14 @@ const Login = ({ serverResponse }) => {
             className="text-indigo-600 hover:text-indigo-500 font-medium"
           >
             Sign Up
+          </a>
+        </p>
+        <p className="text-center text-sm mt-2">
+          <a
+            href="/forgotpassword"
+            className="text-indigo-600 hover:text-indigo-500 font-medium"
+          >
+            Forgot Password?
           </a>
         </p>
       </div>
