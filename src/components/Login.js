@@ -34,14 +34,14 @@ const Login = ({ serverResponse }) => {
       if (response.status === 200) {
         console.log(`response from server ${response.data}`);
         const {
-          JSESSIONID,
+          jwtToken,
           userName,
           userRole,
           patientFirstname,
           patientLastname,
         } = response.data;
         console.log(
-          JSESSIONID,
+          jwtToken,
           userName,
           userRole,
           patientFirstname,
