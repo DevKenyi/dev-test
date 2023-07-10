@@ -13,6 +13,7 @@ import {
   Card,
   IconButton,
   Switch,
+  Collapse,
 } from "@material-tailwind/react";
 import {
   CubeTransparentIcon,
@@ -131,17 +132,17 @@ const navListMenuItems = [
     path: "/doctors",
   },
   {
-    title: "Test/Medications",
+    title: "Medication/Tests",
     description: "Manage your medications",
     path: "/test",
   },
   {
-    title: "Reports",
+    title: "Reports and Analytics",
     description: "View and download medical reports",
     path: "/report",
   },
   {
-    title: "Settings",
+    title: "Alert and Notification",
     description: "Manage your account settings",
     path: "/settings",
   },
@@ -221,19 +222,19 @@ const navListItems = [
     icon: UserCircleIcon,
   },
   {
-    label: "Doctors",
+    label: "Appointments",
     icon: CubeTransparentIcon,
   },
   {
-    label: "Medications",
+    label: "Doctors",
     icon: CodeBracketSquareIcon,
   },
   {
-    label: "Test",
+    label: "Medication/Test",
     icon: CodeBracketSquareIcon,
   },
   {
-    label: "Appointments",
+    label: "Report",
     icon: CodeBracketSquareIcon,
   },
 ];
@@ -279,12 +280,11 @@ export default function NavBar() {
       <Navbar>
         <div className="relative mx-auto flex items-center text-blue-gray-900">
           <Typography
-            d
             as="a"
             href="#"
             className="mr-4 ml-2 cursor-pointer py-1.5 font-medium"
           >
-            e-Health
+            eHealth
           </Typography>
           <div className="absolute top-2/4 left-2/4 hidden -translate-x-2/4 -translate-y-2/4 lg:block">
             <NavList />
@@ -300,9 +300,9 @@ export default function NavBar() {
           </IconButton>
           <ProfileMenu />
         </div>
-        <MobileNav open={isNavOpen} className="overflow-scroll">
+        <Collapse open={isNavOpen} className="overflow-scroll">
           <NavList />
-        </MobileNav>
+        </Collapse>
       </Navbar>
     </div>
   );

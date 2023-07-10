@@ -4,6 +4,7 @@ import Registration from "./components/Registration";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Layout from "./components/Layout";
+import Appointments from "./components/Appointments";
 function App() {
   return (
     <AuthProvider>
@@ -17,6 +18,14 @@ function App() {
             element={
               <Layout>
                 <Dashboard />
+              </Layout>
+            }
+          />
+          <Route
+            path="/appointments"
+            element={
+              <Layout>
+                <Appointments />
               </Layout>
             }
           />

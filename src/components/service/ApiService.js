@@ -11,9 +11,9 @@ class ApiService {
     return axios.post(baseUrl + "/login", data);
   }
 
-  static appointmentList() {
+  static appointmentList(headers) {
     const encodedUrl = encodeURI(baseUrl + "/appointments");
-    return axios.get(encodedUrl);
+    return axios.get(encodedUrl, { headers });
   }
 }
 

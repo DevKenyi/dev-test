@@ -1,10 +1,33 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Typography, Button } from "@material-tailwind/react";
-import Charts from "./Charts";
 import { AuthContext } from "./AuthProvider";
 
 export default function Dashboard() {
   const { userData } = useContext(AuthContext);
+  const [jwtToken, setJwtToken] = useState("");
+  const savedToken = localStorage.getItem("jwtToken");
+
+  useEffect(() => {
+    if (savedToken) {
+      setJwtToken(savedToken);
+    }
+  }, [savedToken]);
+
+  useEffect(() => {
+    if (userData) {
+      const userDataWithToken = { ...userData, jwtToken };
+      localStorage.setItem("userData", JSON.stringify(userDataWithToken));
+    }
+  }, [userData, jwtToken]);
+
+  useEffect(() => {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      const parsedUserData = JSON.parse(storedUserData);
+      setJwtToken(parsedUserData.jwtToken);
+    }
+  }, []);
+
   if (!userData) {
     return null;
   }
@@ -72,7 +95,7 @@ export default function Dashboard() {
             Current Medications
           </Button>
         </div> */}
-        <Charts />
+        {/* <Charts /> */}
       </div>
     </div>
   );

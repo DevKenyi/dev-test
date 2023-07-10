@@ -163,14 +163,14 @@ export default function Registration() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <div>
+            {/* <div>
               <DatePicker
                 className="w-full"
                 label="Date of birth"
                 value={dob}
                 onChange={(date) => handleDateChange(date)}
               />
-            </div>
+            </div> */}
             <Form.Field>
               <Checkbox
                 className="mt-8"

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ApiService from "./service/ApiService";
 import { AuthContext } from "./AuthProvider";
 
-const Login = ({ serverResponse }) => {
+const Login = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -33,20 +33,12 @@ const Login = ({ serverResponse }) => {
       const response = await ApiService.login(loginRequestData);
       if (response.status === 200) {
         console.log(`response from server ${response.data}`);
-        const {
-          jwtToken,
-          userName,
-          userRole,
-          patientFirstname,
-          patientLastname,
-        } = response.data;
-        console.log(
-          jwtToken,
-          userName,
-          userRole,
-          patientFirstname,
-          patientLastname
-        );
+        const { jwtToken } = response.data;
+
+        //Clear this console on production
+
+        localStorage.setItem("jwtToken", jwtToken);
+
         navigate("/dashboard");
 
         login(response.data);
@@ -59,14 +51,6 @@ const Login = ({ serverResponse }) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSessionTimout = () => {
-    let timoutId;
-  };
-
-  const resetTimout = () => {
-    logout();
   };
 
   return (
