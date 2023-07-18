@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Typography, Button } from "@material-tailwind/react";
 import { AuthContext } from "./AuthProvider";
+import Charts from "./Charts";
 
 export default function Dashboard() {
   const { userData } = useContext(AuthContext);
@@ -18,7 +19,7 @@ export default function Dashboard() {
       const userDataWithToken = { ...userData, jwtToken };
       localStorage.setItem("userData", JSON.stringify(userDataWithToken));
     }
-  }, [userData, jwtToken]);
+  });
 
   useEffect(() => {
     const storedUserData = localStorage.getItem("userData");
@@ -95,7 +96,7 @@ export default function Dashboard() {
             Current Medications
           </Button>
         </div> */}
-        {/* <Charts /> */}
+        <Charts />
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
-import ApiService from "./service/ApiService";
+import ApiService from "../service/ApiService";
 import { HttpStatusCode } from "axios";
 
 import "semantic-ui-css/semantic.min.css";
@@ -22,6 +22,7 @@ export default function Registration() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [dob, setDob] = useState("");
+  const [qualification, setQualification] = useState("");
 
   const navigate = useNavigate();
 
@@ -87,7 +88,7 @@ export default function Registration() {
         dob,
         terms,
       };
-      const response = await ApiService.patientRegPost(formData);
+      const response = await ApiService.doctorRegPost(formData);
       if (response.status === HttpStatusCode.Created) {
         navigate("/login");
         const data = response.data;
@@ -119,7 +120,9 @@ export default function Registration() {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="flex justify-center items-center h-screen bg-gray-100">
         <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-center text-2xl font-bold mb-8">Sign Up</h2>
+          <h2 className="text-center text-2xl font-bold mb-8">
+            Doctor Onboarding
+          </h2>
           <Form className="space-y-4" onSubmit={handleSubmit}>
             <Form.Input
               placeholder="Firstname"
@@ -163,16 +166,14 @@ export default function Registration() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            {
-              <div>
-                <DatePicker
-                  className="w-full"
-                  label="Date of birth"
-                  value={dob}
-                  onChange={(date) => handleDateChange(date)}
-                />
-              </div>
-            }
+            <div>
+              <DatePicker
+                className="w-full"
+                label="Date of birth"
+                value={dob}
+                onChange={(date) => handleDateChange(date)}
+              />
+            </div>
             <Form.Field>
               <Checkbox
                 className="mt-8"

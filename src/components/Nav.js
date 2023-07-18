@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {} from "@heroicons/react/outline";
 import {
   Navbar,
@@ -30,6 +30,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { Link } from "react-router-dom";
+import { AuthContext } from "./AuthProvider";
 
 const profileMenuItems = [
   {
@@ -55,6 +56,11 @@ const profileMenuItems = [
 ];
 
 function ProfileMenu() {
+  const { userData } = useContext(AuthContext);
+  console.log("Data coming from Nav " + userData);
+  const { profilePicture } = userData || {}; // Add a conditional check to assign an empty object if userData is null or undefined
+  console.log(profilePicture?.imageUrl);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -66,13 +72,17 @@ function ProfileMenu() {
           color="blue-gray"
           className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
         >
-          <Avatar
-            variant="circular"
-            size="sm"
-            alt="candice wu"
-            className="border border-blue-500 p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-          />
+          {profilePicture?.imageUrl ? (
+            <Avatar
+              variant="circular"
+              size="sm"
+              alt="candice wu"
+              className="border border-blue-500 p-0.5"
+              src={profilePicture.imageUrl}
+            />
+          ) : (
+            <UserCircleIcon className="h-6 w-6" />
+          )}
           <ChevronDownIcon
             strokeWidth={2.5}
             className={`h-3 w-3 transition-transform ${
@@ -127,9 +137,9 @@ const navListMenuItems = [
     path: "/appointments",
   },
   {
-    title: "Doctors",
+    title: "Doctors Pool",
     description: "Find and connect with doctors",
-    path: "/doctors",
+    path: "/doctors-list",
   },
   {
     title: "Medication/Tests",
@@ -224,18 +234,22 @@ const navListItems = [
   {
     label: "Appointments",
     icon: CubeTransparentIcon,
+    path: "/appointments",
   },
   {
     label: "Doctors",
     icon: CodeBracketSquareIcon,
+    path: "/doctors-list",
   },
   {
     label: "Medication/Test",
     icon: CodeBracketSquareIcon,
+    path: "/medication",
   },
   {
-    label: "Report",
+    label: "Alerts",
     icon: CodeBracketSquareIcon,
+    path: "/alerts",
   },
 ];
 
@@ -243,21 +257,25 @@ function NavList() {
   return (
     <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
       <NavListMenu />
-      {navListItems.map(({ label, icon }, key) => (
-        <Typography
-          key={label}
-          as="a"
-          href="#"
-          variant="small"
-          color="blue-gray"
-          className="font-normal"
-        >
-          <MenuItem className="flex items-center gap-2 lg:rounded-full">
-            {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
-            {label}
-          </MenuItem>
-        </Typography>
-      ))}
+      {navListItems.map(
+        (
+          { label, icon, path } // Add path to the map function arguments
+        ) => (
+          <Typography
+            key={label}
+            as={Link} // Change as="a" to as={Link}
+            to={path} // Pass the path to the to prop
+            variant="small"
+            color="blue-gray"
+            className="font-normal"
+          >
+            <MenuItem className="flex items-center gap-2 lg:rounded-full">
+              {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
+              {label}
+            </MenuItem>
+          </Typography>
+        )
+      )}
     </ul>
   );
 }

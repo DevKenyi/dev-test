@@ -15,6 +15,14 @@ class ApiService {
     const encodedUrl = encodeURI(baseUrl + "/appointments");
     return axios.get(encodedUrl, { headers });
   }
+
+  static doctorRegPost(data) {
+    return axios.post(baseUrl + "/doctor", data);
+  }
+  static docotorsList(headers) {
+    const encodedUrl = encodeURI(baseUrl + "/doctors-list");
+    return axios.get(encodedUrl, { headers });
+  }
 }
 
 export default ApiService;
