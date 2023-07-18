@@ -43,7 +43,7 @@ const DoctorsList = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 mt-16">
+    <div className="grid grid-cols-1 gap-2 lg:grid-cols-3 mt-16">
       {doctorList.map((doctor, index) => (
         <div key={index}>
           <Card className="mt-6 w-96">
