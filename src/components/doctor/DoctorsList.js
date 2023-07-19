@@ -43,7 +43,7 @@ const DoctorsList = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-2 lg:grid-cols-3 mt-16">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 mt-16 border">
       {doctorList.map((doctor, index) => (
         <div key={index}>
           <Card className="mt-6 w-96">
@@ -59,9 +59,17 @@ const DoctorsList = () => {
                 Dr. {`${doctor.firstname} ${doctor.lastname}`}
               </Typography>
               <Typography>Email: {doctor.email}</Typography>
+              <Typography>{doctor.specialization}</Typography>
+              <Typography
+                className={
+                  doctor.availability ? "text-green-500" : "text-red-500"
+                }
+              >
+                {doctor.availability ? "Available" : "Unavailable"}
+              </Typography>
             </CardBody>
             <CardFooter className="pt-0">
-              <Button>Book Appointment</Button>
+              <Button disabled={!doctor.availability}>Book Appointment</Button>
             </CardFooter>
           </Card>
         </div>
