@@ -98,7 +98,7 @@ const Appointments = () => {
                   color="blue-gray"
                   className="font-normal leading-none opacity-70"
                 >
-                  Status
+                  Doctor's Available
                 </Typography>
               </th>
               <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">

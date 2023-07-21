@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiService from "../service/ApiService";
+import BookAppModal from "../BookAppModal";
+
+import { Rating, Typography } from "@material-tailwind/react";
 import {
   Card,
   CardHeader,
   CardBody,
   CardFooter,
-  Typography,
   Button,
 } from "@material-tailwind/react";
 
 const DoctorsList = () => {
+  const [rated, setRated] = React.useState(4);
+
   const jwtToken = localStorage.getItem("jwtToken");
 
   const [doctorList, setDoctorsList] = useState([]);
@@ -41,6 +45,11 @@ const DoctorsList = () => {
       console.log("Error getting response", error);
     }
   };
+  const [showAppointmentModal, setShowAppointmentModel] = useState(true);
+  const handleOnClick = (doctosId) => {
+    setShowAppointmentModel(true);
+    console.log("doctor id here " + doctosId);
+  };
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 mt-16 border">
@@ -66,10 +75,18 @@ const DoctorsList = () => {
                 }
               >
                 {doctor.availability ? "Available" : "Unavailable"}
+                <div className="flex items-center gap-2">
+                  <Rating value={4} onChange={(value) => setRated(value)} />
+                  <Typography color="blue-gray" className="font-medium">
+                    {rated}.0 Rated
+                  </Typography>
+                </div>
               </Typography>
             </CardBody>
             <CardFooter className="pt-0">
-              <Button disabled={!doctor.availability}>Book Appointment</Button>
+              {showAppointmentModal && (
+                <BookAppModal disabled={!doctor.availability} />
+              )}
             </CardFooter>
           </Card>
         </div>
