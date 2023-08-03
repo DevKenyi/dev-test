@@ -23,6 +23,11 @@ class ApiService {
     const encodedUrl = encodeURI(baseUrl + "/doctors-list");
     return axios.get(encodedUrl, { headers });
   }
+
+  static bookAppointmentPost(doctorId, data, headers) {
+    const url = `${baseUrl}/appointment-bookings/${doctorId}`;
+    return axios.post(url, data, { headers });
+  }
 }
 
 export default ApiService;
