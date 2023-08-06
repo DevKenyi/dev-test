@@ -29,13 +29,14 @@ import {
   Bars2Icon,
 } from "@heroicons/react/24/outline";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
 
 const profileMenuItems = [
   {
     label: "My Profile",
     icon: UserCircleIcon,
+    path: "/dashboard",
   },
   {
     label: "Edit Profile",
@@ -52,6 +53,7 @@ const profileMenuItems = [
   {
     label: "Sign Out",
     icon: PowerIcon,
+    path: "/login",
   },
 ];
 
@@ -63,6 +65,36 @@ function ProfileMenu() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const closeMenu = () => setIsMenuOpen(false);
+
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    localStorage.clear();
+
+    navigate("/login");
+  };
+
+  const handleMenuItemClick = (path) => {
+    // Close the menu
+    closeMenu();
+
+    // Check the path of the clicked menu item and perform the corresponding action
+    if (path === "/login") {
+      handleSignOut(); // Sign Out
+    } else if (path === "/dashboard") {
+      // Redirect to the dashboard or profile page
+      navigate(path);
+    } else if (path === "/edit-profile") {
+      // Redirect to the edit profile page
+      navigate(path);
+    } else if (path === "/inbox") {
+      // Redirect to the inbox page
+      navigate(path);
+    } else if (path === "/help") {
+      // Redirect to the help page
+      navigate(path);
+    }
+  };
 
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
@@ -92,12 +124,12 @@ function ProfileMenu() {
         </Button>
       </MenuHandler>
       <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon }, key) => {
+        {profileMenuItems.map(({ label, icon, path }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
           return (
             <MenuItem
               key={label}
-              onClick={closeMenu}
+              onClick={() => handleMenuItemClick(path)} // Use handleMenuItemClick for all menu items
               className={`flex items-center gap-2 rounded ${
                 isLastItem
                   ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
@@ -142,9 +174,9 @@ const navListMenuItems = [
     path: "/doctors-list",
   },
   {
-    title: "Medication/Tests",
+    title: "Diagnostic Report",
     description: "Manage your medications",
-    path: "/test",
+    path: "/tests",
   },
   {
     title: "Reports and Analytics",
@@ -230,6 +262,7 @@ const navListItems = [
   {
     label: "Profile",
     icon: UserCircleIcon,
+    path: "/dashboard",
   },
   {
     label: "Appointments",
@@ -242,9 +275,9 @@ const navListItems = [
     path: "/doctors-list",
   },
   {
-    label: "Medication/Test",
+    label: "Diagnostic Report",
     icon: CodeBracketSquareIcon,
-    path: "/medication",
+    path: "/tests",
   },
   {
     label: "Alerts",

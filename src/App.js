@@ -7,6 +7,7 @@ import Layout from "./components/Layout";
 import Appointments from "./components/Appointments";
 import DoctorRegistration from "./components/doctor/DoctorRegistration";
 import DoctorsList from "./components/doctor/DoctorsList";
+import Tests from "./components/Tests";
 
 function App() {
   return (
@@ -42,6 +43,14 @@ function App() {
               element={
                 <Layout>
                   <DoctorsList />
+                </Layout>
+              }
+            />
+            <Route
+              path="tests"
+              element={
+                <Layout>
+                  <Tests />
                 </Layout>
               }
             />

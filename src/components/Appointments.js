@@ -23,6 +23,15 @@ const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
 
   const navigate = useNavigate();
+  // const availabilityStatus = {
+  //   scheduled: "Scheduled",
+  //   InProcess: "In Progress",
+  //   Completed: "Completed",
+  //   Cancelled: "Cancelled",
+  //   Missed: "Missed",
+  //   Rescheduled: "Resheduled",
+  //   Pending: "Pending",
+  // };
 
   useEffect(() => {
     fetchData();
@@ -116,6 +125,15 @@ const Appointments = () => {
                   color="blue-gray"
                   className="font-normal leading-none opacity-70"
                 >
+                  Appointment Status
+                </Typography>
+              </th>
+              <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-normal leading-none opacity-70"
+                >
                   Action
                 </Typography>
               </th>
@@ -184,6 +202,31 @@ const Appointments = () => {
                     {appointment.appointmentDateTime}
                   </Typography>
                 </td>
+                <td className="p-4">
+                  <div className="w-max">
+                    <Chip
+                      variant="ghost"
+                      size="sm"
+                      value={appointment.appointmentStatus}
+                      color={
+                        appointment.status === "Scheduled"
+                          ? "blue"
+                          : appointment.status === "In process"
+                          ? "orange"
+                          : appointment.status === "Completed"
+                          ? "green"
+                          : appointment.status === "Cancelled"
+                          ? "red"
+                          : appointment.status === "Missed"
+                          ? "gray"
+                          : appointment.status === "Rescheduled"
+                          ? "purple"
+                          : "blue-gray"
+                      }
+                    />
+                  </div>
+                </td>
+
                 <td className="p-4">
                   <Tooltip content="Edit User">
                     <IconButton variant="text" color="blue-gray">
