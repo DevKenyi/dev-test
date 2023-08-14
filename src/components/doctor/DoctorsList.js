@@ -11,6 +11,7 @@ import {
   Button,
 } from "@material-tailwind/react";
 import DoctorModal from "../DoctorModal";
+import PopUpModalMessage from "../PopUpModalMessage";
 
 const DoctorsList = () => {
   const [rated, setRated] = React.useState(4);
@@ -18,6 +19,7 @@ const DoctorsList = () => {
   const jwtToken = localStorage.getItem("jwtToken");
 
   const [doctorList, setDoctorsList] = useState([]);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -46,6 +48,7 @@ const DoctorsList = () => {
     }
   };
   const [showAppointmentModal, setShowAppointmentModel] = useState(true);
+  const [popUpMessage, setPopUpMessage] = useState(false);
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 mt-16 border">
       {doctorList.map((doctor, index) => (
@@ -90,6 +93,7 @@ const DoctorsList = () => {
                   doctorId={doctor.doctorId}
                 />
               )}
+              {popUpMessage && <PopUpModalMessage />}
             </CardFooter>
           </Card>
         </div>

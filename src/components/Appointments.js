@@ -211,7 +211,7 @@ const Appointments = () => {
                       color={
                         appointment.status === "Scheduled"
                           ? "blue"
-                          : appointment.status === "In process"
+                          : appointment.status === "Inprocess"
                           ? "orange"
                           : appointment.status === "Completed"
                           ? "green"
@@ -240,7 +240,7 @@ const Appointments = () => {
         </table>
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-        <Typography variant="small" color="blue-gray" className="font-normal">
+        {/* <Typography variant="small" color="blue-gray" className="font-normal">
           Page 1 of 10
         </Typography>
         <div className="flex gap-2">
@@ -250,7 +250,7 @@ const Appointments = () => {
           <Button variant="outlined" color="blue-gray" size="sm">
             Next
           </Button>
-        </div>
+        </div> */}
       </CardFooter>
     </Card>
   );

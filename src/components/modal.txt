@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { HttpStatusCode } from "axios";
 import ApiService from "./service/ApiService";
-import PopUpModalMessage from "./PopUpModalMessage";
+import { AlertWithContent, SuccessMessage } from "./SuccessMessage";
 
 export default function DoctorModal({ disabled, doctorId }) {
   const [openModal, setOpenModal] = useState(false);
@@ -11,14 +11,7 @@ export default function DoctorModal({ disabled, doctorId }) {
   const [purpose, setPurpose] = useState("");
   const [loading, setIsLoading] = useState(false);
   const jwtToken = localStorage.getItem("jwtToken");
-  const [isAppointmentBooked, setIsAppointmentBooked] = useState(false);
-
-  const [dateTouched, setDateTouched] = useState(false);
-  const [timeTouched, setTimeTouched] = useState(false);
-  const [purposeTouched, setPurposeTouched] = useState(false);
-  const [dateError, setDateError] = useState(false);
-  const [timeError, setTimeError] = useState(false);
-  const [purposeError, setPurposeError] = useState(false);
+  const [successfulMessage, setSuccessfulMessage] = useState(false);
 
   const handleBookAppointment = async (doctorId) => {
     console.log(
@@ -27,22 +20,6 @@ export default function DoctorModal({ disabled, doctorId }) {
       appointmentTime,
       purpose
     );
-
-    if (!appointmentDate) {
-      setDateError(true);
-      setDateTouched(true);
-      return;
-    }
-    if (!appointmentTime) {
-      setTimeError(true);
-      setTimeTouched(true);
-      return;
-    }
-    if (!purpose) {
-      setPurposeError(true);
-      setPurposeTouched(true);
-      return;
-    }
 
     console.log("doctor id is " + doctorId);
     try {
@@ -53,7 +30,7 @@ export default function DoctorModal({ disabled, doctorId }) {
       const formattedDateTime = appointmentDateTime.toISOString();
 
       const data = {
-        appointmentDateTime: formattedDateTime, //  formatted date and time
+        appointmentDateTime: formattedDateTime, // Use the formatted date and time
         purpose,
       };
 
@@ -65,7 +42,6 @@ export default function DoctorModal({ disabled, doctorId }) {
       // Process the response here
       if (response.status === HttpStatusCode.Created) {
         console.log("Appointment is booked successfully");
-        setIsAppointmentBooked(true); // Set the state to indicate successful booking
       } else {
         console.log("Failed to book appointment" + response.status);
       }
@@ -75,6 +51,7 @@ export default function DoctorModal({ disabled, doctorId }) {
     }
 
     setOpenModal(false);
+    setSuccessfulMessage(true);
   };
 
   return (
@@ -100,17 +77,9 @@ export default function DoctorModal({ disabled, doctorId }) {
                 type="date"
                 id="appointment-date"
                 value={appointmentDate}
-                onChange={(e) => {
-                  setAppointmentDate(e.target.value);
-                  setDateTouched(true);
-                  setDateError(false);
-                }}
-                onBlur={() => setDateTouched(true)}
+                onChange={(e) => setAppointmentDate(e.target.value)}
                 required
               />
-              {dateTouched && dateError && (
-                <span className="text-red-500">Date is required</span>
-              )}
             </div>
             <div>
               <Label htmlFor="appointment-time" value="Time of Appointment" />
@@ -118,17 +87,9 @@ export default function DoctorModal({ disabled, doctorId }) {
                 type="time"
                 id="appointment-time"
                 value={appointmentTime}
-                onChange={(e) => {
-                  setAppointmentTime(e.target.value);
-                  setTimeTouched(true);
-                  setTimeError(false);
-                }}
-                onBlur={() => setTimeTouched(true)}
+                onChange={(e) => setAppointmentTime(e.target.value)}
                 required
               />
-              {timeTouched && timeError && (
-                <span className="text-red-500">Time is required</span>
-              )}
             </div>
             <div>
               <Label
@@ -138,17 +99,9 @@ export default function DoctorModal({ disabled, doctorId }) {
               <TextInput
                 id="appointment-purpose"
                 value={purpose}
-                onChange={(e) => {
-                  setPurpose(e.target.value);
-                  setPurposeTouched(true);
-                  setPurposeError(false);
-                }}
-                onBlur={() => setPurposeTouched(true)}
+                onChange={(e) => setPurpose(e.target.value)}
                 required
               />
-              {purposeTouched && purposeError && (
-                <span className="text-red-500">Purpose is required</span>
-              )}
             </div>
             <div className="w-full">
               <Button
@@ -161,7 +114,95 @@ export default function DoctorModal({ disabled, doctorId }) {
           </div>
         </Modal.Body>
       </Modal>
-      {isAppointmentBooked && <PopUpModalMessage setOpenModal={setOpenModal} />}
+      {successfulMessage && <SuccessMessage />}
+    </>
+  );
+}
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+import React from "react";
+import { Alert, Button, Typography } from "@material-tailwind/react";
+
+function Icon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="h-6 w-6"
+    >
+      <path
+        fillRule="evenodd"
+        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+export function SuccessMessage() {
+  const [open, setOpen] = React.useState(true);
+
+  return (
+    <>
+      <Alert
+        open={open}
+        color="green"
+        className="max-w-screen-md"
+        icon={<Icon />}
+        onClose={() => setOpen(false)}
+      >
+        <Typography variant="h5" color="white">
+          Success
+        </Typography>
+        <Typography color="white" className="mt-2 font-normal">
+          I don&apos;t know what that word means. I&apos;m happy. But success,
+          that goes back to what in somebody&apos;s eyes success means. For me,
+          success is inner peace. That&apos;s a good day for me.
+        </Typography>
+      </Alert>
+    </>
+  );
+}
+ 
+ /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+import { Modal } from "flowbite-react";
+import React, { useState } from "react";
+
+export default function SuccessMessage() {
+  const [openModal, setOpenModal] = useState(false);
+  return (
+    <>
+      <Modal
+        show={openModal}
+        size="md"
+        popup
+        onClose={() => setOpenModal(false)}
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="space-y-6">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+              Book Appointment
+            </h3>
+            <div>some text here</div>
+            <div>//another text here</div>
+            <div>
+              htmlFor="appointment-purpose" value="Purpose of Appointment" //
+              Another
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </>
   );
 }
