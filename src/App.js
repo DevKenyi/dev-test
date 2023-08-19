@@ -8,6 +8,8 @@ import Appointments from "./components/Appointments";
 import DoctorRegistration from "./components/doctor/DoctorRegistration";
 import DoctorsList from "./components/doctor/DoctorsList";
 import Tests from "./components/Tests";
+import DoctorDashboard from "./components/doctor/DoctorDashboard";
+import DocLayout from "./components/doctor/DocLayout";
 
 function App() {
   return (
@@ -24,6 +26,15 @@ function App() {
                 <Layout>
                   <Dashboard />
                 </Layout>
+              }
+            />
+            <Route
+              path="/doctor-dashboard"
+              element={
+                <DocLayout>
+                  {" "}
+                  <DoctorDashboard />
+                </DocLayout>
               }
             />
             <Route

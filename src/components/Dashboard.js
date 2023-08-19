@@ -19,18 +19,28 @@ export default function Dashboard() {
       const userDataWithToken = { ...userData, jwtToken };
       localStorage.setItem("userData", JSON.stringify(userDataWithToken));
     }
-  });
+  }, [userData, jwtToken]);
 
   useEffect(() => {
-    const storedUserData = localStorage.getItem("userData");
-    if (storedUserData) {
-      const parsedUserData = JSON.parse(storedUserData);
-      setJwtToken(parsedUserData.jwtToken);
+    try {
+      const storedUserData = localStorage.getItem("userData");
+      if (storedUserData) {
+        const parsedUserData = JSON.parse(storedUserData);
+        setJwtToken(parsedUserData.jwtToken);
+      }
+    } catch (error) {
+      console.error("Error parsing userData from localStorage:", error);
     }
   }, []);
 
   if (!userData) {
-    return null;
+    return (
+      <div className="mx-auto max-w-screen-xl p-2 lg:rounded lg:pl-6 my-16 border shadow-lg">
+        <Typography color="red" className="text-center font-bold">
+          Loading user data...
+        </Typography>
+      </div>
+    );
   }
   return (
     <div className="mx-auto max-w-screen-xl p-2 lg:rounded lg:pl-6 my-16 border shadow-lg">

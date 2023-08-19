@@ -42,6 +42,26 @@ const Login = () => {
         navigate("/dashboard");
 
         login(response.data);
+
+        const user_role = response.data.userRole;
+        console.log("USER ROLE HERE " + user_role);
+
+        switch (user_role) {
+          case "ROLE_PATIENT":
+            navigate("/dashboard");
+            break;
+
+          case "ROLE_DOCTOR":
+            navigate("/doctor-dashboard");
+            break;
+
+          case "ROLE_ADMIN":
+            navigate("/admin");
+            break;
+
+          default:
+            navigate("/login");
+        }
       } else {
         setIsError(true);
       }
