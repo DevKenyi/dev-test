@@ -10,64 +10,103 @@ import DoctorsList from "./components/doctor/DoctorsList";
 import Tests from "./components/Tests";
 import DoctorDashboard from "./components/doctor/DoctorDashboard";
 import DocLayout from "./components/doctor/DocLayout";
+import Appointmets_Doctors from "./components/doctor/Appointmets_Doctors";
+import DoctorPatients from "./components/doctor/DoctorPatients";
+import DoctorShedule from "./components/doctor/DoctorShedule";
+import DoctorsSettings from "./components/doctor/DoctorsSettings";
 
 function App() {
   return (
     <>
-      <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/registration" element={<Registration />} />
-            <Route path="/login" element={<Login />} />
+      <Router>
+        <Routes>
+          <Route path="/registration" element={<Registration />} />
+          <Route path="/login" element={<Login />} />
 
-            <Route
-              path="/dashboard"
-              element={
-                <Layout>
-                  <Dashboard />
-                </Layout>
-              }
-            />
-            <Route
-              path="/doctor-dashboard"
-              element={
-                <DocLayout>
-                  {" "}
-                  <DoctorDashboard />
-                </DocLayout>
-              }
-            />
-            <Route
-              path="/appointments"
-              element={
-                <Layout>
-                  <Appointments />
-                </Layout>
-              }
-            />
-            <Route
-              path="/registration-doctor"
-              element={<DoctorRegistration />}
-            />
-            <Route
-              path="/doctors-list"
-              element={
-                <Layout>
-                  <DoctorsList />
-                </Layout>
-              }
-            />
-            <Route
-              path="tests"
-              element={
-                <Layout>
-                  <Tests />
-                </Layout>
-              }
-            />
-          </Routes>
-        </Router>
-      </AuthProvider>
+          <Route
+            path="/dashboard"
+            element={
+              <Layout>
+                <Dashboard />
+              </Layout>
+            }
+          />
+          <Route
+            path="/doctor-dashboard"
+            element={
+              <DocLayout>
+                <DoctorDashboard />
+              </DocLayout>
+            }
+          />
+          <Route
+            path="/doctors-dashboard"
+            element={
+              <DocLayout>
+                <DoctorDashboard />
+              </DocLayout>
+            }
+          />
+          <Route
+            path="/doctor-patients"
+            element={
+              <DocLayout>
+                <DoctorPatients />
+              </DocLayout>
+            }
+          />
+          <Route
+            path="/doctor-appointments"
+            element={
+              <DocLayout>
+                <Appointmets_Doctors />
+              </DocLayout>
+            }
+          />
+          <Route
+            path="/doctors-schedule"
+            element={
+              <DocLayout>
+                <DoctorShedule />
+              </DocLayout>
+            }
+          />
+          <Route
+            path="/doctor-setting"
+            element={
+              <DocLayout>
+                <DoctorsSettings />
+              </DocLayout>
+            }
+          />
+
+          <Route
+            path="/appointments"
+            element={
+              <Layout>
+                <Appointments />
+              </Layout>
+            }
+          />
+          <Route path="/registration-doctor" element={<DoctorRegistration />} />
+          <Route
+            path="/doctors-list"
+            element={
+              <Layout>
+                <DoctorsList />
+              </Layout>
+            }
+          />
+          <Route
+            path="tests"
+            element={
+              <Layout>
+                <Tests />
+              </Layout>
+            }
+          />
+        </Routes>
+      </Router>
     </>
   );
 }

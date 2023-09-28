@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiService from "./service/ApiService";
-import { AuthContext } from "./AuthProvider";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,8 +10,6 @@ const Login = () => {
   const [formError, setFormError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-
-  const { login, logout } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,16 +32,28 @@ const Login = () => {
         console.log(`response from server ${response.data}`);
         const { jwtToken } = response.data;
 
-        //Clear this console on production
-
         localStorage.setItem("jwtToken", jwtToken);
 
-        navigate("/dashboard");
-
-        login(response.data);
+        // navigate("/dashboard");
 
         const user_role = response.data.userRole;
         console.log("USER ROLE HERE " + user_role);
+
+        const userData = response.data;
+
+        // Store the entire userData object as a JSON string in local storage
+        // localStorage.setItem("userData", JSON.stringify(userData));
+
+        // Check specific properties within userData
+        if (userData.patientId) {
+          localStorage.setItem("patientId", userData.patientId);
+        } else if (userData.id) {
+          localStorage.setItem("doctorId", userData.id);
+        } else if (userData.adminId) {
+          localStorage.setItem("adminId", userData.adminId);
+        } else {
+          console.log("Error!!! No Id was found ");
+        }
 
         switch (user_role) {
           case "ROLE_PATIENT":
@@ -108,6 +117,7 @@ const Login = () => {
               Sign In
             </button>
           </div>
+          <div className="text-red-800">{isError}</div>
         </form>
         <p className="text-center text-sm mt-4">
           Click to Register?{" "}

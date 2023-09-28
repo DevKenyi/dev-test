@@ -58,10 +58,10 @@ const profileMenuItems = [
 ];
 
 function ProfileMenu() {
-  const { userData } = useContext(AuthContext);
-  console.log("Data coming from Nav " + userData);
-  const { profilePicture } = userData || {}; // Add a conditional check to assign an empty object if userData is null or undefined
-  console.log(profilePicture?.imageUrl);
+  // const { userData } = useContext(AuthContext);
+  // console.log("Data coming from Nav " + userData);
+  // const { profilePicture } = userData || {}; // Add a conditional check to assign an empty object if userData is null or undefined
+  // console.log(profilePicture?.imageUrl);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const closeMenu = () => setIsMenuOpen(false);
@@ -104,7 +104,7 @@ function ProfileMenu() {
           color="blue-gray"
           className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
         >
-          {profilePicture?.imageUrl ? (
+          {/* {profilePicture?.imageUrl ? (
             <Avatar
               variant="circular"
               size="sm"
@@ -114,7 +114,7 @@ function ProfileMenu() {
             />
           ) : (
             <UserCircleIcon className="h-6 w-6" />
-          )}
+          )} */}
           <ChevronDownIcon
             strokeWidth={2.5}
             className={`h-3 w-3 transition-transform ${

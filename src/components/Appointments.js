@@ -23,15 +23,6 @@ const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
 
   const navigate = useNavigate();
-  // const availabilityStatus = {
-  //   scheduled: "Scheduled",
-  //   InProcess: "In Progress",
-  //   Completed: "Completed",
-  //   Cancelled: "Cancelled",
-  //   Missed: "Missed",
-  //   Rescheduled: "Resheduled",
-  //   Pending: "Pending",
-  // };
 
   useEffect(() => {
     fetchData();
@@ -56,6 +47,7 @@ const Appointments = () => {
       console.log("Error getting data", error);
     }
   };
+  
 
   return (
     <Card className="h-full w-full p-32">

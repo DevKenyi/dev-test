@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TestDoc from "./test_doc.jpg";
 import {
   Card,
@@ -17,46 +17,98 @@ import {
   InboxIcon,
   PowerIcon,
 } from "@heroicons/react/24/solid";
+import ApiService from "../service/ApiService";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+const doctorId = localStorage.getItem("doctorId");
+const jwtToken = localStorage.getItem("jwtToken");
 
 export function SideNavBarDoctor() {
-  //const greetings = "Welcome to your ";
+  const [doctorProfile, setDoctorProfile] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    doctorsDetails();
+  }, [doctorId]);
+
+  const doctorsDetails = async () => {
+    try {
+      const response = await ApiService.findDoctorById(doctorId, {
+        Authorization: `Bearer ${jwtToken}`,
+      });
+
+      if (response.status === 200) {
+        setDoctorProfile(response.data);
+        console.log(
+          "Getting doctor details here " +
+            JSON.stringify(doctorProfile && doctorProfile.firstname)
+        );
+      } else {
+        console.log(
+          "Failed to fetch doctor details. Status: " + response.status
+        );
+      }
+    } catch (error) {
+      console.log(
+        "An error occurred while trying to fetch data: " + error.message
+      );
+    }
+  };
+
+  console.log("Image URL:", doctorProfile?.profilePicture?.imageUrl);
+  const completeImageUrl = doctorProfile?.profilePicture?.imageUrl
+    ? `http://${doctorProfile.profilePicture.imageUrl}`
+    : null;
+
+  const handleSignout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
+
+  const handleDashboard = () => {
+    navigate("/doctor-dashboard");
+  };
+
   return (
     <Card className="h-[calc(100vh-2rem)] w-full md:w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
       <div className="mb-1 p-2 w-full border shadow-sm ">
         <div className="flex items-center justify-center">
           <img
-            src={TestDoc}
-            alt="Doctor"
+            src={completeImageUrl}
+            alt={doctorProfile?.firstname}
             className="h-32 w-32 rounded-full mt-12"
           />
         </div>
+
         <div className="flex flex-col justify-center mb-12 mt-4 items-center">
           <Typography variant="h5" color="blue-gray">
-            Dr. John Doe
+            <span>Dr.</span>
+            {doctorProfile?.firstname}
           </Typography>
           <Typography variant="subtitle2" color="blue-gray">
-            Cardiologist
+            {doctorProfile?.specialization}
           </Typography>
         </div>
       </div>
       <List>
-        <ListItem>
+        <ListItem onClick={handleDashboard}>
           <ListItemPrefix>
             <PresentationChartBarIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Dashboard
+          <Link to="/doctor-dashboard">Dashboard</Link>
         </ListItem>
         <ListItem>
           <ListItemPrefix>
             <ShoppingBagIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Appointments
+          <Link to="/doctor-appointments">Doctors Appoinments</Link>
         </ListItem>
         <ListItem>
           <ListItemPrefix>
             <InboxIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Patient List
+          <Link to="/doctor-patients">Patient List</Link>
           <ListItemSuffix>
             <Chip
               value="14"
@@ -71,7 +123,7 @@ export function SideNavBarDoctor() {
           <ListItemPrefix>
             <InboxIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Schedule
+          <Link to="/doctors-schedule">Schedule</Link>
           <ListItemSuffix>
             <Chip
               value="14"
@@ -84,21 +136,15 @@ export function SideNavBarDoctor() {
         </ListItem>
         <ListItem>
           <ListItemPrefix>
-            <UserCircleIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Profile
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
             <Cog6ToothIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Settings
+          <Link to="/doctor-setting">Settings</Link>
         </ListItem>
-        <ListItem>
+        <ListItem onClick={handleSignout}>
           <ListItemPrefix>
             <PowerIcon className="h-5 w-5" />
           </ListItemPrefix>
-          Log Out
+          <Link to="/login">Log Out</Link>
         </ListItem>
       </List>
     </Card>
