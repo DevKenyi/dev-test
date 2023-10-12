@@ -94,6 +94,22 @@ class ApiService {
     console.log(`Url here ${url}`);
     return axios.get(url, { headers });
   }
+
+  static fetchAppointmentsByDoctorId(doctorId, headers) {
+    const url = `${baseUrl}/api/v2/doctors/${doctorId}/appointments`;
+    console.log(
+      `Url for fetching appointments for patients based on doctors id here ${url}`
+    );
+    return axios.get(url, { headers });
+  }
+
+  static createMeeting(doctorId, data, headers) {
+    const url = `${baseUrl}/api/video/meeting/${doctorId}`;
+    console.log(
+      `Url creating video conferinging meeting based on doctors id here ${url}`
+    );
+    return axios.post(url, data, { headers });
+  }
 }
 
 export default ApiService;

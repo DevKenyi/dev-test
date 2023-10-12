@@ -26,6 +26,7 @@ const jwtToken = localStorage.getItem("jwtToken");
 
 export function SideNavBarDoctor() {
   const [doctorProfile, setDoctorProfile] = useState(null);
+  const [completeImageUrl, setCompleteImageUrl] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,9 +58,18 @@ export function SideNavBarDoctor() {
   };
 
   console.log("Image URL:", doctorProfile?.profilePicture?.imageUrl);
-  const completeImageUrl = doctorProfile?.profilePicture?.imageUrl
-    ? `http://${doctorProfile.profilePicture.imageUrl}`
-    : null;
+
+  const handleCompleteImageUrl = () => {
+    setCompleteImageUrl(
+      doctorProfile?.profilePicture?.imageUrl
+        ? `http://${doctorProfile.profilePicture.imageUrl}`
+        : null
+    );
+  };
+
+  useEffect(() => {
+    handleCompleteImageUrl();
+  }, [doctorId, doctorProfile]);
 
   const handleSignout = () => {
     localStorage.clear();
@@ -74,8 +84,9 @@ export function SideNavBarDoctor() {
     <Card className="h-[calc(100vh-2rem)] w-full md:w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
       <div className="mb-1 p-2 w-full border shadow-sm ">
         <div className="flex items-center justify-center">
+        
           <img
-            src={completeImageUrl}
+            src={completeImageUrl ? completeImageUrl : "image loading"}
             alt={doctorProfile?.firstname}
             className="h-32 w-32 rounded-full mt-12"
           />
