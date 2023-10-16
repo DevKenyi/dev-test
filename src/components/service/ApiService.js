@@ -102,13 +102,20 @@ class ApiService {
     );
     return axios.get(url, { headers });
   }
-
+  //api for creating meeting
   static createMeeting(doctorId, data, headers) {
     const url = `${baseUrl}/api/video/meeting/${doctorId}`;
     console.log(
       `Url creating video conferinging meeting based on doctors id here ${url}`
     );
     return axios.post(url, data, { headers });
+  }
+
+  //api for adding adding participants
+  static addParticipants(doctorId, meetingId, payload, headers) {
+    const url = `${baseUrl}/api/meetings/${meetingId}/participants/${doctorId}`;
+    console.log(`Url for adding participant to the meeting here  ${url}`);
+    return axios.post(url, payload, { headers });
   }
 }
 

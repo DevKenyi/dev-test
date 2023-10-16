@@ -9,23 +9,34 @@ import {
 } from "@material-tailwind/react";
 import ApiService from "../service/ApiService";
 import { HttpStatusCode } from "axios";
+import { CustomSpinner } from "../SpinnerComponent";
+import { DyteErrorMessage } from "../DyteErrorMessage";
+import MeedingVideoConferencing from "../meetin_ui/MeedingVideoConferencing";
 
 export function CreateMeetingModal({
   btnText,
-  patientId,
-  handleButtonClick,
   color,
+  handleChildOnClick,
+  patientId,
+  status,
+  patientJwt,
 }) {
   const [open, setOpen] = useState(false);
-  const doctorsId = localStorage.getItem("doctorId");
-  const jwtToken = localStorage.getItem("jwtToken");
   const [meetingTitle, setMeetingTitle] = useState("");
   const [meetingResponse, setMeetingResponse] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [dyteErrorMessage, setDyteErrorMessage] = useState(false);
+  const [establishConnection, setEstablishConnection] = useState(false);
+  const doctorsId = localStorage.getItem("doctorId");
+  const jwtToken = localStorage.getItem("jwtToken");
+  const [meetingId, setMeetingId] = useState("");
 
-  const handleOpen = () => setOpen(!open);
-
-  const handleFunction = (patientId) => {
-    handleButtonClick(patientId);
+  const handleOpen = () => {
+    if (status !== "Scheduled") {
+      alert("You are not scheduled for an appointment.");
+    } else {
+      setOpen(true);
+    }
   };
 
   const createMeeting = async (e) => {
@@ -80,49 +91,114 @@ export function CreateMeetingModal({
     };
 
     try {
+      setLoading(true);
       const response = await ApiService.createMeeting(doctorsId, newMeeting, {
         Authorization: `Bearer ${jwtToken}`,
       });
 
-      console.log("here is the users jwt " + jwtToken);
-      // Process the response here
+      console.log("Response from createMeeting:", response);
+
       if (response.status === HttpStatusCode.Created) {
-        console.log(
-          "Meeting is booked successfully" + JSON.stringify(response.data)
-        );
-        setMeetingResponse(response.data.data); // Set the state to indicate successful booking
-        const { id } = meetingResponse;
-        console.log("meeting id destructured here " + id);
+        setLoading(false);
+
+        // Extract the meeting ID from the response data
+        const dataStartIndex = response.data.indexOf('{"id":"');
+        const dataEndIndex = response.data.indexOf('"', dataStartIndex + 7);
+
+        if (dataStartIndex !== -1 && dataEndIndex !== -1) {
+          const meetingId = response.data.substring(
+            dataStartIndex + 7,
+            dataEndIndex
+          );
+          console.log("Meeting id:", meetingId);
+          setMeetingId(meetingId); // Set the meeting ID in the state
+          addPaticipantPatient();
+        } else {
+          console.log("Failed to extract the meeting ID from the response.");
+        }
       } else {
-        console.log("Failed to create meeting" + JSON.stringify(response.data));
+        console.log("Failed to create meeting. Response:", response.data);
+        setLoading(false);
+        setDyteErrorMessage(true);
       }
     } catch (error) {
-      console.log("Error creating meeting", error);
-      // setIsLoading(false);
+      console.log("Error creating meeting:", error);
+      setLoading(false);
+      setDyteErrorMessage(true);
     }
-
-    // setOpenModal(false);
   };
+
+  const handleButtonOnClick = () => {
+    handleChildOnClick(patientId);
+  };
+
+  const addPaticipantPatient = async () => {
+    console.log("Before setting meetingId:", meetingId);
+    setMeetingId("test-meeting-id"); // This is for testing, replace with the actual value
+    console.log("After setting meetingId:", meetingId);
+    const participantPayload = {
+      name: "Mary Sue",
+      picture: "https://i.imgur.com/test.jpg",
+      preset_name: "webinar_presenter",
+      custom_participant_id: "23",
+    };
+
+    console.log(
+      "value of the meeting id here for debugging in add participant function" +
+        meetingId
+    );
+    const addParticipantsResponse = await ApiService.addParticipants(
+      doctorsId,
+      meetingId,
+      participantPayload,
+      {
+        Authorization: `Bearer ${jwtToken}`,
+      }
+    );
+
+    console.log("meeting id here from add participants" + meetingId);
+
+    // Handle the response from adding participants here
+    console.log("Response from addParticipants:", addParticipantsResponse);
+
+    // Process the response data
+    if (addParticipantsResponse.status === HttpStatusCode.Created) {
+      console.log(
+        "Participant added successfully:",
+        addParticipantsResponse.data
+      );
+      // Perform actions based on successful participant addition
+    } else {
+      console.log(
+        "Failed to add participant. Response:",
+        addParticipantsResponse.data
+      );
+      // Handle the case where participant addition failed
+    }
+  };
+
   return (
     <>
       <Button
         className={`bg-${color}-500 text-black`}
         onClick={() => {
-          handleOpen();
-          handleButtonClick(patientId);
+          {
+            handleOpen();
+            handleButtonOnClick();
+          }
         }}
       >
         {btnText}
       </Button>
-      <Dialog open={open} handler={handleOpen}>
+      <Dialog open={open} handler={() => setOpen(false)}>
         <div className="flex items-center justify-between">
-          <DialogHeader>Meeting Setup </DialogHeader>
+          <DialogHeader>Meeting Setup</DialogHeader>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
             className="mr-3 h-5 w-5"
-            onClick={handleOpen}
+            onClick={() => setOpen(false)}
           >
             {/* SVG path */}
           </svg>
@@ -138,11 +214,18 @@ export function CreateMeetingModal({
           </div>
         </DialogBody>
         <DialogFooter className="space-x-2">
-          <Button variant="outlined" color="red" onClick={handleOpen}>
-            close
+          <Button variant="outlined" color="red" onClick={() => setOpen(false)}>
+            Close
           </Button>
-          <Button variant="gradient" color="green" onClick={createMeeting}>
-            Create Meeting
+          <Button
+            disabled={loading}
+            variant="gradient"
+            color="green"
+            onClick={createMeeting}
+          >
+            {loading ? <CustomSpinner /> : btnText}
+            {<DyteErrorMessage showError={dyteErrorMessage} />}
+            {establishConnection && <MeedingVideoConferencing />}
           </Button>
         </DialogFooter>
       </Dialog>

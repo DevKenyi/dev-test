@@ -1,9 +1,5 @@
 import { Spinner } from "@material-tailwind/react";
 
-export function SpinnerColors() {
-  return (
-    <div className="flex gap-8">
-      <Spinner color="blue" />
-    </div>
-  );
+export function CustomSpinner() {
+  return <Spinner className="h-6 w-32 text-gray-900/50" />;
 }

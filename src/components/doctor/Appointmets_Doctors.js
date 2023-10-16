@@ -79,11 +79,11 @@ const Appointmets_Doctors = () => {
     }
   };
 
-  const handleAppointmentBtn = (patientId) => {
-    setPatientIdState(patientId); // Set the patientId
-    setShowCreateMeeting(true);
+  const handlePatientIdClick = (patientId, patientJwt) => {
+    console.log(`Patient id ${patientId} clicked check for bugs `);
+    console.log(`Patient jwt ${patientJwt} clicked check for bugs `);
+
     console.log("showCreateMeeting value:", showCreateMeeting);
-    console.log("Patient ID clicked:", patientId);
   };
 
   return (
@@ -337,9 +337,15 @@ const Appointmets_Doctors = () => {
                           /> */}
 
                           <CreateMeetingModal
-                            handleButtonClick={(patientId) =>
-                              handleAppointmentBtn(patientId)
-                            }
+                            handleChildOnClick={() => {
+                              {
+                                handlePatientIdClick(
+                                  patientListData.patient.patientId,
+                                  patientListData.patient.jwtToken
+                                );
+                              }
+                            }}
+                            patientJwt={patientListData.patient.jwtToken}
                             color={
                               patientListData.appointmentStatus === "Scheduled"
                                 ? "blue"
@@ -362,6 +368,7 @@ const Appointmets_Doctors = () => {
                             btnText={buttonText(
                               patientListData.appointmentStatus
                             )}
+                            status={patientListData.appointmentStatus}
                           />
                         </td>
                       </tr>
