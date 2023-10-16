@@ -120,3 +120,6 @@ class ApiService {
 }
 
 export default ApiService;
+
+// http://localhost:1992/api/meetings//participants/1
+// localhost:1992/api/meetings/bbb70676-08c3-4cf3-b2a5-286b66c849ec/participants/1

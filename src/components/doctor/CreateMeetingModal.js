@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -26,10 +26,11 @@ export function CreateMeetingModal({
   const [meetingResponse, setMeetingResponse] = useState({});
   const [loading, setLoading] = useState(false);
   const [dyteErrorMessage, setDyteErrorMessage] = useState(false);
-  const [establishConnection, setEstablishConnection] = useState(false);
   const doctorsId = localStorage.getItem("doctorId");
   const jwtToken = localStorage.getItem("jwtToken");
   const [meetingId, setMeetingId] = useState("");
+  const [authToken, setAuthToken] = useState("");
+  const [meetingStatus, setMeetingStatus] = useState(false);
 
   const handleOpen = () => {
     if (status !== "Scheduled") {
@@ -112,7 +113,7 @@ export function CreateMeetingModal({
           );
           console.log("Meeting id:", meetingId);
           setMeetingId(meetingId); // Set the meeting ID in the state
-          addPaticipantPatient();
+          addParticipants(meetingId);
         } else {
           console.log("Failed to extract the meeting ID from the response.");
         }
@@ -132,10 +133,7 @@ export function CreateMeetingModal({
     handleChildOnClick(patientId);
   };
 
-  const addPaticipantPatient = async () => {
-    console.log("Before setting meetingId:", meetingId);
-    setMeetingId("test-meeting-id"); // This is for testing, replace with the actual value
-    console.log("After setting meetingId:", meetingId);
+  const addParticipants = async (meetingId) => {
     const participantPayload = {
       name: "Mary Sue",
       picture: "https://i.imgur.com/test.jpg",
@@ -143,39 +141,52 @@ export function CreateMeetingModal({
       custom_participant_id: "23",
     };
 
-    console.log(
-      "value of the meeting id here for debugging in add participant function" +
-        meetingId
-    );
-    const addParticipantsResponse = await ApiService.addParticipants(
-      doctorsId,
-      meetingId,
-      participantPayload,
-      {
-        Authorization: `Bearer ${jwtToken}`,
+    try {
+      const addParticipantsResponse = await ApiService.addParticipants(
+        doctorsId,
+        meetingId,
+        participantPayload,
+        {
+          Authorization: `Bearer ${jwtToken}`,
+        }
+      );
+
+      console.log("Response from addParticipants:", addParticipantsResponse);
+
+      if (addParticipantsResponse.status === HttpStatusCode.Created) {
+        console.log(
+          "Participant added successfully:",
+          addParticipantsResponse.data
+        );
+
+        // Extract token using string manipulation
+        const responseText = addParticipantsResponse.data;
+        const tokenStartIndex = responseText.indexOf('"token":"') + 9;
+        const tokenEndIndex = responseText.indexOf('"', tokenStartIndex);
+        const token = responseText.substring(tokenStartIndex, tokenEndIndex);
+
+        setAuthToken(token);
+        setMeetingStatus(true);
+        console.log("Token for participant:", token);
+        console.log("set value of auth token " + authToken);
+      } else {
+        console.log(
+          "Failed to add participant. Response:",
+          addParticipantsResponse.data
+        );
+        // Handle the case where participant addition failed
       }
-    );
-
-    console.log("meeting id here from add participants" + meetingId);
-
-    // Handle the response from adding participants here
-    console.log("Response from addParticipants:", addParticipantsResponse);
-
-    // Process the response data
-    if (addParticipantsResponse.status === HttpStatusCode.Created) {
-      console.log(
-        "Participant added successfully:",
-        addParticipantsResponse.data
-      );
-      // Perform actions based on successful participant addition
-    } else {
-      console.log(
-        "Failed to add participant. Response:",
-        addParticipantsResponse.data
-      );
-      // Handle the case where participant addition failed
+    } catch (error) {
+      console.log("Error adding participants:", error);
     }
   };
+  useEffect(() => {
+    console.log("Token has been updated:", authToken);
+  }, [authToken]);
+
+  useEffect(() => {
+    console.log("Updated meeting status " + meetingStatus);
+  }, [meetingStatus]);
 
   return (
     <>
@@ -225,7 +236,9 @@ export function CreateMeetingModal({
           >
             {loading ? <CustomSpinner /> : btnText}
             {<DyteErrorMessage showError={dyteErrorMessage} />}
-            {establishConnection && <MeedingVideoConferencing />}
+            {meetingStatus && (
+              <MeedingVideoConferencing authToken={authToken} />
+            )}
           </Button>
         </DialogFooter>
       </Dialog>
